@@ -1,34 +1,36 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
-import { useAuthStore } from '../stores/authStore';
-import { LogIn } from 'lucide-react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import { useAuthStore } from "../stores/authStore";
+import { LogIn } from "lucide-react";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('buyer');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("buyer");
   const [isSignUp, setIsSignUp] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { setUser, setUserRole } = useAuthStore();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     try {
       if (isSignUp) {
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email,
-          password,
-        });
+        const { data: authData, error: authError } = await supabase.auth.signUp(
+          {
+            email,
+            password,
+          }
+        );
 
         if (authError) throw authError;
 
         if (authData.user) {
           const { error: profileError } = await supabase
-            .from('users')
+            .from("users")
             .insert([{ id: authData.user.id, email, role }]);
 
           if (profileError) throw profileError;
@@ -38,25 +40,33 @@ export default function Login() {
           navigate(`/${role}`);
         }
       } else {
-        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+        const { data: authData, error: authError } =
+          await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
 
         if (authError) throw authError;
 
         if (authData.user) {
           const { data: userData, error: userError } = await supabase
-            .from('users')
-            .select('role')
-            .eq('id', authData.user.id)
+            .from("users")
+            .select("*")
+            .eq("id", authData.user.id)
             .single();
 
           if (userError) throw userError;
 
-          setUser(authData.user);
-          setUserRole(userData.role);
-          navigate(`/${userData.role}`);
+          if (userData) {
+            // Proceed if user data is found
+            setUser(authData.user);
+            setUserRole(userData.role);
+            navigate(`/${userData.role}`);
+          } else {
+            // Handle case where no user is found
+            console.log("No user found in the database for the given ID");
+            // Optionally, redirect or show an error message to the user
+          }
         }
       }
     } catch (err: any) {
@@ -72,7 +82,7 @@ export default function Login() {
             <LogIn className="h-6 w-6 text-blue-600" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {isSignUp ? 'Create your account' : 'Sign in to your account'}
+            {isSignUp ? "Create your account" : "Sign in to your account"}
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleAuth}>
@@ -102,8 +112,7 @@ export default function Login() {
                 <select
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                   value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                >
+                  onChange={(e) => setRole(e.target.value)}>
                   <option value="buyer">Buyer</option>
                   <option value="seller">Seller</option>
                 </select>
@@ -118,9 +127,8 @@ export default function Login() {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              {isSignUp ? 'Sign up' : 'Sign in'}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              {isSignUp ? "Sign up" : "Sign in"}
             </button>
           </div>
 
@@ -128,10 +136,9 @@ export default function Login() {
             <button
               type="button"
               className="font-medium text-blue-600 hover:text-blue-500"
-              onClick={() => setIsSignUp(!isSignUp)}
-            >
+              onClick={() => setIsSignUp(!isSignUp)}>
               {isSignUp
-                ? 'Already have an account? Sign in'
+                ? "Already have an account? Sign in"
                 : "Don't have an account? Sign up"}
             </button>
           </div>
