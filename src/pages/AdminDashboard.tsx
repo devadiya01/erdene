@@ -58,7 +58,7 @@ export default function AdminDashboard() {
     activeProducts: 0,
     activeRequests: 0,
     matchRate: 0,
-    categoryStats: {},
+    categoryStats: {}
   });
 
   // Filtering states
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
             request:requests(id, title, budget, quantity, unit, category, delivery_date, buyer:users(email))
           `
           )
-          .order("created_at", { ascending: false }),
+          .order("created_at", { ascending: false })
       ]);
 
       if (productsData.error) throw productsData.error;
@@ -136,7 +136,7 @@ export default function AdminDashboard() {
         activeProducts,
         activeRequests,
         matchRate,
-        categoryStats: categoryStats || {},
+        categoryStats: categoryStats || {}
       });
     } catch (err: any) {
       console.error("Error fetching data:", err.message);
@@ -155,8 +155,8 @@ export default function AdminDashboard() {
           product_id: selectedProduct,
           request_id: selectedRequest,
           fee: parseFloat(fee),
-          status: "pending",
-        },
+          status: "pending"
+        }
       ]);
 
       if (error) throw error;
@@ -256,7 +256,7 @@ export default function AdminDashboard() {
               </label>
               <select
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border py-2 px-4 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 value={selectedProduct}
                 onChange={(e) => setSelectedProduct(e.target.value)}>
                 <option value="">Бүтээгдэхүүн сонгох...</option>
@@ -275,7 +275,7 @@ export default function AdminDashboard() {
               </label>
               <select
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border py-2 px-4 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 value={selectedRequest}
                 onChange={(e) => setSelectedRequest(e.target.value)}>
                 <option value="">Хүсэлт сонгох...</option>
@@ -297,7 +297,7 @@ export default function AdminDashboard() {
                 required
                 min="0"
                 step="0.01"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block border py-2 px-4 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 value={fee}
                 onChange={(e) => setFee(e.target.value)}
               />
